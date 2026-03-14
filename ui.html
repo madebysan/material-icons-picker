@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 13px;
+      background: var(--figma-color-bg, #fff);
+      color: var(--figma-color-text, #333);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      padding: 12px;
+      border-bottom: 1px solid var(--figma-color-border, #e5e5e5);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+    }
+
+    .info-btn {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      flex-shrink: 0;
+      transition: background 0.1s;
+    }
+
+    .info-btn:hover {
+      background: var(--figma-color-bg-secondary, #f5f5f5);
+    }
+
+    .info-btn .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--figma-color-text-tertiary, #aaa);
+    }
+
+    /* About overlay */
+    .about-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-overlay.visible {
+      display: flex;
+    }
+
+    .about-card {
+      background: var(--figma-color-bg, #fff);
+      border-radius: 12px;
+      padding: 24px;
+      width: 280px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .about-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--figma-color-text, #333);
+    }
+
+    .about-card .about-version {
+      font-size: 11px;
+      color: var(--figma-color-text-tertiary, #aaa);
+      margin-bottom: 12px;
+    }
+
+    .about-card p {
+      font-size: 12px;
+      color: var(--figma-color-text-secondary, #666);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .about-card a {
+      color: var(--figma-color-bg-brand, #0d99ff);
+      text-decoration: none;
+    }
+
+    .about-card a:hover {
+      text-decoration: underline;
+    }
+
+    .about-close {
+      border: none;
+      background: var(--figma-color-bg-secondary, #f5f5f5);
+      color: var(--figma-color-text-secondary, #666);
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .about-close:hover {
+      background: var(--figma-color-bg-hover, #eee);
+    }
+
+    .search-wrap > .material-symbols-outlined {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      color: var(--figma-color-text-secondary, #999);
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      border: 1px solid var(--figma-color-border, #e0e0e0);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      background: var(--figma-color-bg-secondary, #f5f5f5);
+      color: var(--figma-color-text, #333);
+      transition: border-color 0.15s;
+    }
+
+    .search-input:focus {
+      border-color: var(--figma-color-bg-brand, #0d99ff);
+      background: var(--figma-color-bg, #fff);
+    }
+
+    .search-input::placeholder {
+      color: var(--figma-color-text-tertiary, #aaa);
+    }
+
+    /* Tabs: Favorites + All */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--figma-color-border, #e5e5e5);
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 0;
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--figma-color-text-secondary, #999);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+
+    .tab-btn:hover {
+      color: var(--figma-color-text, #333);
+    }
+
+    .tab-btn.active {
+      color: var(--figma-color-text, #333);
+      border-bottom-color: var(--figma-color-bg-brand, #0d99ff);
+    }
+
+    /* Filters */
+    .filters {
+      display: flex;
+      gap: 6px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--figma-color-border, #e5e5e5);
+      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .filters::-webkit-scrollbar { display: none; }
+
+    .filter-btn {
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: 1px solid var(--figma-color-border, #e0e0e0);
+      background: transparent;
+      color: var(--figma-color-text-secondary, #666);
+      font-size: 11px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover {
+      background: var(--figma-color-bg-hover, #f0f0f0);
+    }
+
+    .filter-btn.active {
+      background: var(--figma-color-bg-brand, #0d99ff);
+      color: #fff;
+      border-color: var(--figma-color-bg-brand, #0d99ff);
+    }
+
+    /* Style toggle */
+    .style-bar {
+      display: flex;
+      gap: 6px;
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--figma-color-border, #e5e5e5);
+      flex-shrink: 0;
+      align-items: center;
+    }
+
+    .style-bar label {
+      font-size: 11px;
+      color: var(--figma-color-text-secondary, #999);
+      margin-right: auto;
+    }
+
+    .style-toggle {
+      display: flex;
+      background: var(--figma-color-bg-secondary, #f5f5f5);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .style-toggle button {
+      padding: 4px 8px;
+      border: none;
+      background: transparent;
+      font-size: 11px;
+      cursor: pointer;
+      color: var(--figma-color-text-secondary, #666);
+      transition: all 0.15s;
+    }
+
+    .style-toggle button.active {
+      background: var(--figma-color-bg-brand, #0d99ff);
+      color: #fff;
+    }
+
+    /* Count */
+    .count {
+      padding: 4px 12px;
+      font-size: 11px;
+      color: var(--figma-color-text-tertiary, #aaa);
+      flex-shrink: 0;
+    }
+
+    /* Icon grid */
+    .grid-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px;
+    }
+
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      gap: 2px;
+    }
+
+    .icon-grid.large {
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 4px;
+    }
+
+    .icon-grid.large .icon-item {
+      padding: 14px 6px 8px;
+    }
+
+    .icon-grid.large .icon-glyph {
+      font-size: 40px !important;
+    }
+
+    .icon-grid.large .icon-label {
+      font-size: 10px;
+      margin-top: 6px;
+    }
+
+    .icon-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 4px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.1s;
+      position: relative;
+      border: 1px solid transparent;
+    }
+
+    .icon-item:hover {
+      background: var(--figma-color-bg-secondary, #f5f5f5);
+      border-color: var(--figma-color-border, #e0e0e0);
+    }
+
+    .icon-item:active {
+      background: var(--figma-color-bg-tertiary, #eee);
+    }
+
+    .icon-item .material-symbols-outlined.icon-glyph {
+      font-size: 28px;
+      color: var(--figma-color-text, #333);
+      line-height: 1;
+    }
+
+    .icon-item .icon-label {
+      font-size: 9px;
+      margin-top: 5px;
+      color: var(--figma-color-text-tertiary, #aaa);
+      text-align: center;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    /* Icon action buttons */
+    .icon-actions {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      display: flex;
+      gap: 1px;
+      opacity: 0;
+      transition: opacity 0.1s;
+    }
+
+    .icon-item:hover .icon-actions,
+    .icon-item .icon-actions:has(.is-fav) {
+      opacity: 1;
+    }
+
+    .insert-btn,
+    .link-btn {
+      width: 18px;
+      height: 18px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background 0.1s;
+    }
+
+    .insert-btn:hover,
+    .link-btn:hover {
+      background: var(--figma-color-bg-tertiary, #e0e0e0);
+    }
+
+    .insert-btn .material-symbols-outlined,
+    .link-btn .material-symbols-outlined {
+      font-size: 13px;
+      color: var(--figma-color-text-tertiary, #bbb);
+    }
+
+    /* Favorite star */
+    .fav-btn {
+      width: 18px;
+      height: 18px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: background 0.1s;
+    }
+
+    .fav-btn:hover {
+      background: var(--figma-color-bg-tertiary, #e0e0e0);
+    }
+
+    .fav-btn .material-symbols-outlined {
+      font-size: 14px;
+      color: var(--figma-color-text-tertiary, #bbb);
+    }
+
+    .fav-btn.is-fav .material-symbols-outlined {
+      color: #f5a623;
+      font-variation-settings: 'FILL' 1;
+    }
+
+    /* Copied flash */
+    .copied-flash {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--figma-color-bg-brand, #0d99ff);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      z-index: 200;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .copied-flash.show { opacity: 1; }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: var(--figma-color-text-secondary, #999);
+      font-size: 13px;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--figma-color-border, #e0e0e0);
+      border-top-color: var(--figma-color-bg-brand, #0d99ff);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Empty state */
+    .empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: var(--figma-color-text-tertiary, #aaa);
+      gap: 8px;
+      padding: 40px 20px;
+    }
+
+    .empty .material-symbols-outlined {
+      font-size: 40px;
+      opacity: 0.4;
+    }
+
+    .empty span:last-child {
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="search-wrap">
+      <span class="material-symbols-outlined">search</span>
+      <input class="search-input" type="text" placeholder="Search icons..." autofocus />
+    </div>
+    <button class="info-btn" id="infoBtn">
+      <span class="material-symbols-outlined">info</span>
+    </button>
+  </div>
+
+  <div class="about-overlay" id="aboutOverlay">
+    <div class="about-card">
+      <h3>Material Icons Picker</h3>
+      <div class="about-version">v1.0</div>
+      <p>Browse, search, and copy Google Material Symbol icon names. Icons are fetched live from <a href="#" onclick="window.open('https://fonts.google.com/icons');return false">fonts.google.com/icons</a> on every launch.</p>
+      <p>Made by <a href="#" onclick="window.open('https://santiagoalonso.com');return false">santiagoalonso.com</a></p>
+      <button class="about-close" id="aboutClose">Close</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="all">All Icons</button>
+    <button class="tab-btn" data-tab="favorites">Favorites</button>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="style-bar">
+    <label>Style</label>
+    <div class="style-toggle" id="sizeToggle">
+      <button class="active" data-size="small">S</button>
+      <button data-size="large">L</button>
+    </div>
+    <div class="style-toggle" id="styleToggle">
+      <button class="active" data-fill="0">Outlined</button>
+      <button data-fill="1">Filled</button>
+    </div>
+  </div>
+
+  <div class="count" id="count"></div>
+
+  <div class="grid-container" id="gridContainer">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      Loading icons...
+    </div>
+    <div class="icon-grid" id="iconGrid"></div>
+    <div class="empty" id="empty" style="display:none">
+      <span class="material-symbols-outlined">search_off</span>
+      <span>No icons found</span>
+    </div>
+  </div>
+
+  <div class="copied-flash" id="copiedFlash"></div>
+
+  <script>
+    const METADATA_URL = 'https://fonts.google.com/metadata/icons?key=material_symbols&incomplete=true';
+
+    let allIcons = [];
+    let filteredIcons = [];
+    let categories = [];
+    let activeCategory = 'all';
+    let filled = false;
+    let iconSize = 'small';
+    let favorites = new Set();
+    let activeTab = 'all';
+
+    const searchInput = document.querySelector('.search-input');
+    const filtersEl = document.getElementById('filters');
+    const iconGrid = document.getElementById('iconGrid');
+    const loadingEl = document.getElementById('loading');
+    const emptyEl = document.getElementById('empty');
+    const countEl = document.getElementById('count');
+    const copiedFlash = document.getElementById('copiedFlash');
+    const styleToggle = document.getElementById('styleToggle');
+    const sizeToggle = document.getElementById('sizeToggle');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+
+    // ---- Persistence via figma.clientStorage ----
+    function savePreference(key, value) {
+      parent.postMessage({ pluginMessage: { type: 'save-preference', key, value } }, '*');
+    }
+
+    function loadPreference(key) {
+      parent.postMessage({ pluginMessage: { type: 'load-preference', key } }, '*');
+    }
+
+    // Listen for loaded preferences
+    window.addEventListener('message', (event) => {
+      const msg = event.data.pluginMessage;
+      if (!msg || msg.type !== 'preference-loaded') return;
+
+      if (msg.key === 'filled' && msg.value !== undefined) {
+        filled = msg.value;
+        styleToggle.querySelectorAll('button').forEach(b => {
+          b.classList.toggle('active', b.dataset.fill === (filled ? '1' : '0'));
+        });
+        if (allIcons.length > 0) renderGrid();
+      }
+
+      if (msg.key === 'iconSize' && msg.value) {
+        iconSize = msg.value;
+        sizeToggle.querySelectorAll('button').forEach(b => {
+          b.classList.toggle('active', b.dataset.size === iconSize);
+        });
+        iconGrid.classList.toggle('large', iconSize === 'large');
+      }
+
+      if (msg.key === 'favorites' && msg.value) {
+        favorites = new Set(msg.value);
+        if (allIcons.length > 0) filterAndRender();
+      }
+    });
+
+    // Request saved preferences on load
+    loadPreference('filled');
+    loadPreference('iconSize');
+    loadPreference('favorites');
+
+    // ---- Tabs ----
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeTab = btn.dataset.tab;
+        // Hide category filters on favorites tab
+        filtersEl.style.display = activeTab === 'favorites' ? 'none' : 'flex';
+        filterAndRender();
+      });
+    });
+
+    // ---- Fetch icon metadata ----
+    async function loadIcons() {
+      try {
+        const res = await fetch(METADATA_URL);
+        let text = await res.text();
+        if (text.startsWith(')]}\'\n')) {
+          text = text.slice(5);
+        }
+        const data = JSON.parse(text);
+        const seen = new Set();
+        allIcons = [];
+        for (const icon of data.icons) {
+          if (seen.has(icon.name)) continue;
+          // Skip icons not supported by Material Symbols Outlined
+          const unsupported = icon.unsupported_families || [];
+          if (unsupported.includes('Material Symbols Outlined')) continue;
+          seen.add(icon.name);
+          allIcons.push({
+            name: icon.name,
+            categories: icon.categories || [],
+            tags: icon.tags || [],
+            version: icon.version
+          });
+        }
+
+        const catSet = new Set();
+        allIcons.forEach(icon => icon.categories.forEach(c => catSet.add(c)));
+        categories = Array.from(catSet).sort();
+
+        loadingEl.style.display = 'none';
+        renderFilters();
+        filterAndRender();
+      } catch (err) {
+        loadingEl.innerHTML = '<span style="color:red">Failed to load icons. Check your connection.</span>';
+        console.error(err);
+      }
+    }
+
+    function renderFilters() {
+      let html = '<button class="filter-btn active" data-cat="all">All</button>';
+      categories.forEach(cat => {
+        const label = cat.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        html += `<button class="filter-btn" data-cat="${cat}">${label}</button>`;
+      });
+      filtersEl.innerHTML = html;
+
+      filtersEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        filtersEl.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeCategory = btn.dataset.cat;
+        filterAndRender();
+      });
+    }
+
+    function filterAndRender() {
+      const rawQuery = searchInput.value.toLowerCase().trim();
+      const query = rawQuery.replace(/\s+/g, '_');
+
+      let sourceIcons = allIcons;
+      if (activeTab === 'favorites') {
+        sourceIcons = allIcons.filter(icon => favorites.has(icon.name));
+      }
+
+      if (!query) {
+        filteredIcons = sourceIcons.filter(icon => {
+          return activeTab === 'favorites' || activeCategory === 'all' || icon.categories.includes(activeCategory);
+        });
+      } else {
+        // Score-based search: exact > starts-with > contains > tag match
+        const scored = [];
+        for (const icon of sourceIcons) {
+          const matchesCat = activeTab === 'favorites' || activeCategory === 'all' || icon.categories.includes(activeCategory);
+          if (!matchesCat) continue;
+
+          let score = 0;
+          if (icon.name === query) {
+            score = 100;
+          } else if (icon.name.startsWith(query)) {
+            score = 80;
+          } else if (icon.name.includes(query)) {
+            score = 60;
+          } else if (icon.tags.some(t => t === query || t === rawQuery)) {
+            score = 40;
+          } else if (icon.tags.some(t => t.startsWith(query) || t.startsWith(rawQuery))) {
+            score = 30;
+          } else if (icon.tags.some(t => t.includes(query) || t.includes(rawQuery))) {
+            score = 20;
+          }
+
+          if (score > 0) scored.push({ icon, score });
+        }
+        scored.sort((a, b) => b.score - a.score || a.icon.name.localeCompare(b.icon.name));
+        filteredIcons = scored.map(s => s.icon);
+      }
+
+      const label = activeTab === 'favorites' ? 'favorites' : 'icons';
+      countEl.textContent = `${filteredIcons.length} ${label}`;
+      renderGrid();
+    }
+
+    function renderGrid() {
+      if (filteredIcons.length === 0) {
+        iconGrid.style.display = 'none';
+        emptyEl.style.display = 'flex';
+        if (activeTab === 'favorites' && !searchInput.value) {
+          emptyEl.innerHTML = '<span class="material-symbols-outlined">star</span><span>No favorites yet. Click the star on any icon to save it.</span>';
+        } else {
+          emptyEl.innerHTML = '<span class="material-symbols-outlined">search_off</span><span>No icons found</span>';
+        }
+        return;
+      }
+
+      emptyEl.style.display = 'none';
+      iconGrid.style.display = 'grid';
+      iconGrid.classList.toggle('large', iconSize === 'large');
+
+      const container = document.getElementById('gridContainer');
+      const batchSize = 200;
+      const icons = filteredIcons.slice(0, batchSize);
+
+      iconGrid.innerHTML = buildIconsHtml(icons);
+
+      // Remove previous scroll listener if any
+      if (renderGrid._scrollHandler) {
+        container.removeEventListener('scroll', renderGrid._scrollHandler);
+      }
+
+      let loaded = batchSize;
+      renderGrid._scrollHandler = () => {
+        if (loaded >= filteredIcons.length) return;
+        const scrollBottom = container.scrollTop + container.clientHeight;
+        const gridBottom = iconGrid.offsetHeight;
+        if (scrollBottom >= gridBottom - 100) {
+          const nextBatch = filteredIcons.slice(loaded, loaded + batchSize);
+          iconGrid.insertAdjacentHTML('beforeend', buildIconsHtml(nextBatch));
+          loaded += batchSize;
+        }
+      };
+
+      container.addEventListener('scroll', renderGrid._scrollHandler);
+    }
+
+    function buildIconsHtml(icons) {
+      let html = '';
+      icons.forEach(icon => {
+        const displayName = icon.name.replace(/_/g, ' ');
+        const isFav = favorites.has(icon.name);
+        html += `<div class="icon-item" data-name="${icon.name}">
+          <div class="icon-actions">
+            <button class="insert-btn" data-insert="${icon.name}">
+              <span class="material-symbols-outlined">add_box</span>
+            </button>
+            <button class="link-btn" data-link="${icon.name}">
+              <span class="material-symbols-outlined">open_in_new</span>
+            </button>
+            <button class="fav-btn ${isFav ? 'is-fav' : ''}" data-fav="${icon.name}">
+              <span class="material-symbols-outlined">star</span>
+            </button>
+          </div>
+          <span class="material-symbols-outlined icon-glyph" style="font-variation-settings: 'FILL' ${filled ? 1 : 0}, 'wght' 400, 'GRAD' 0, 'opsz' 24">${icon.name}</span>
+          <span class="icon-label">${displayName}</span>
+        </div>`;
+      });
+      return html;
+    }
+
+    // ---- Flash helper ----
+    let flashTimeout;
+    function showFlash(text) {
+      clearTimeout(flashTimeout);
+      copiedFlash.textContent = text;
+      copiedFlash.classList.add('show');
+      flashTimeout = setTimeout(() => copiedFlash.classList.remove('show'), 1500);
+    }
+
+    // ---- Search ----
+    let searchTimeout;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(filterAndRender, 150);
+    });
+
+    // Keyboard shortcuts
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (searchInput.value) {
+          searchInput.value = '';
+          filterAndRender();
+        }
+      }
+      if (e.key === 'Enter' && filteredIcons.length > 0) {
+        const name = filteredIcons[0].name;
+        const textarea = document.createElement('textarea');
+        textarea.value = name;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showFlash(`Copied "${name}"`);
+        parent.postMessage({ pluginMessage: { type: 'copy-icon-name', name } }, '*');
+      }
+    });
+
+    // ---- Size toggle ----
+    sizeToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      sizeToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      iconSize = btn.dataset.size;
+      iconGrid.classList.toggle('large', iconSize === 'large');
+      savePreference('iconSize', iconSize);
+    });
+
+    // ---- Style toggle ----
+    styleToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      styleToggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filled = btn.dataset.fill === '1';
+      savePreference('filled', filled);
+      renderGrid();
+    });
+
+    // ---- Click handlers (link, favorite, copy) ----
+    iconGrid.addEventListener('click', (e) => {
+      // Insert SVG to canvas
+      const insertBtn = e.target.closest('.insert-btn');
+      if (insertBtn) {
+        e.stopPropagation();
+        const name = insertBtn.dataset.insert;
+        const family = filled ? 'materialsymbolsoutlined' : 'materialsymbolsoutlined';
+        const fill = filled ? 'fill1' : 'default';
+        const svgUrl = `https://fonts.gstatic.com/s/i/short-term/release/${family}/${name}/${fill}/24px.svg`;
+        insertBtn.style.opacity = '0.4';
+        fetch(svgUrl)
+          .then(res => {
+            if (!res.ok) throw new Error('Not found');
+            return res.text();
+          })
+          .then(svg => {
+            if (!svg.includes('<svg')) throw new Error('Invalid SVG');
+            parent.postMessage({ pluginMessage: { type: 'insert-svg', svg, name } }, '*');
+            showFlash(`Inserted "${name}"`);
+          })
+          .catch(() => {
+            showFlash('Failed to fetch SVG');
+          })
+          .finally(() => { insertBtn.style.opacity = ''; });
+        return;
+      }
+
+      // Open in Google Fonts
+      const linkBtn = e.target.closest('.link-btn');
+      if (linkBtn) {
+        e.stopPropagation();
+        const name = linkBtn.dataset.link;
+        window.open(`https://fonts.google.com/icons?icon.query=${name}`, '_blank');
+        return;
+      }
+
+      // Favorite toggle
+      const favBtn = e.target.closest('.fav-btn');
+      if (favBtn) {
+        e.stopPropagation();
+        const name = favBtn.dataset.fav;
+        if (favorites.has(name)) {
+          favorites.delete(name);
+        } else {
+          favorites.add(name);
+        }
+        savePreference('favorites', Array.from(favorites));
+        filterAndRender();
+        return;
+      }
+
+      // Copy icon name
+      const item = e.target.closest('.icon-item');
+      if (!item) return;
+      const name = item.dataset.name;
+
+      const textarea = document.createElement('textarea');
+      textarea.value = name;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
+      showFlash(`Copied "${name}"`);
+      parent.postMessage({ pluginMessage: { type: 'copy-icon-name', name } }, '*');
+    });
+
+    // ---- About overlay ----
+    const aboutOverlay = document.getElementById('aboutOverlay');
+    document.getElementById('infoBtn').addEventListener('click', () => {
+      aboutOverlay.classList.add('visible');
+    });
+    document.getElementById('aboutClose').addEventListener('click', () => {
+      aboutOverlay.classList.remove('visible');
+    });
+    aboutOverlay.addEventListener('click', (e) => {
+      if (e.target === aboutOverlay) aboutOverlay.classList.remove('visible');
+    });
+
+    // ---- Init ----
+    loadIcons();
+  </script>
+</body>
+</html>
