@@ -57,7 +57,7 @@ The plugin fetches icon metadata from Google's Material Symbols API on launch, f
 
 ## Feedback
 
-Found a bug or have a feature idea? [Open an issue](https://github.com/madebysan/figma-icon-picker/issues).
+Found a bug or have a feature idea? [Open an issue](https://github.com/madebysan/material-icons-picker/issues).
 
 ## License
 
