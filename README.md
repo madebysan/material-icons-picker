@@ -1,16 +1,20 @@
-<p align="center">
-  <img src="assets/app-icon.png" width="128" height="128" alt="Material Icons Picker icon">
-</p>
-<h1 align="center">Material Icons Picker</h1>
-<p align="center">Browse, search, and insert Google Material Symbols — always live, always current.</p>
-<p align="center">Figma Plugin</p>
-<p align="center"><a href="https://www.figma.com/community/plugin/1614730415386870995/material-icons-picker"><strong>Install from Figma Community</strong></a></p>
+<p><img src="assets/app-icon.png" width="128" height="128" alt="Material Icons Picker icon"></p>
 
-<p align="center">
-  <img src="assets/screenshot.png" width="600" alt="Material Icons Picker – plugin UI">
+<h1>Material Icons Picker</h1>
+
+<p>Browse, search, and insert Google Material Symbols — always live, always current.</p>
+
+<p><strong>Figma Plugin</strong></p>
+
+<p>
+  <img src="https://img.shields.io/badge/Figma-f24e1e" alt="Figma">
+  <img src="https://img.shields.io/badge/JavaScript-f7df1e" alt="JavaScript">
+  <img src="https://img.shields.io/badge/HTML-e34f26" alt="HTML">
 </p>
 
----
+<p><a href="https://www.figma.com/community/plugin/1614730415386870995/material-icons-picker">Install from Figma Community</a></p>
+
+![Material Icons Picker – plugin UI](assets/screenshot.png)
 
 ## What It Does
 
